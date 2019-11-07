@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "117740840427",
+    "firebase_url": "https://dowaf-d533a.firebaseio.com",
+    "project_id": "dowaf-d533a",
+    "storage_bucket": "dowaf-d533a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117740840427:android:f023b8caa381bef22725ae",
+        "android_client_info": {
+          "package_name": "com.example.dowaf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "117740840427-uomhjm1vp01fcop2ea9ufdtaov9mpk4e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1EO-0n24RiXWyAkWVB7xuGMDtdRRmTqY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "117740840427-uomhjm1vp01fcop2ea9ufdtaov9mpk4e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

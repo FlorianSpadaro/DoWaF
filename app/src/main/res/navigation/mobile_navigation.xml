@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.dowaf.ui.home.HomeFragment"
+        android:label="Accueil"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.example.dowaf.ui.search.SearchFragment"
+        android:label="Recherche"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/navigation_aliment"
+        android:name="com.example.dowaf.ui.aliment.AlimentFragment"
+        android:label="Aliments"
+        tools:layout="@layout/fragment_aliment" />
+
+    <fragment
+        android:id="@+id/navigation_account"
+        android:name="com.example.dowaf.ui.account.AccountFragment"
+        android:label="Compte"
+        tools:layout="@layout/fragment_account" />
+</navigation>
