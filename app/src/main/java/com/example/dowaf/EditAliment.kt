@@ -31,14 +31,25 @@ class EditAliment : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_aliment)
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { return; }
-        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?;
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { return; }
+        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?*/
 
 
         val title = intent.getStringExtra("title")
 
+        println("//////////////////////////////////")
+        println(title)
+        println("//////////////////////////////////")
+
         titleView.text = title
     }
+    fun onClickCancelBtn(view: View)
+    {
+        var intent = Intent(this, ::class.java)
+        intent.putExtra("title", title)
+        startActivity(intent)
+    }
+
     fun showlocation(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
