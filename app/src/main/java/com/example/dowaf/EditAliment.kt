@@ -15,8 +15,10 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.dowaf.model.Aliment
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_edit_aliment.*
 
 
@@ -25,7 +27,9 @@ class EditAliment : AppCompatActivity() {
     private val PERMISSION_CODE = 1000
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
-    private var locationManager : LocationManager? = null
+    private var locationManager: LocationManager? = null
+    private val db = FirebaseFirestore.getInstance()
+    private val storage = FirebaseStorage.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,34 +41,66 @@ class EditAliment : AppCompatActivity() {
 
         val title = intent.getStringExtra("title")
 
-        println("//////////////////////////////////")
-        println(title)
-        println("//////////////////////////////////")
-
         titleView.text = title
     }
-    fun onClickCancelBtn(view: View)
-    {
-        var intent = Intent(this, ::class.java)
-        intent.putExtra("title", title)
-        startActivity(intent)
+
+    fun onClickCancelBtn(view: View) {
+        finish()
     }
 
-    fun showlocation(){
+    fun onClickValidateBtn(view: View) {
+        //val current = LocalDateTime.now().toString()
+        val imagePath = "images/${image_uri!!.lastPathSegment}"
+
+        val storageRef = storage.reference
+
+        val riversRef = storageRef.child(imagePath)
+        val uploadTask = riversRef.putFile(image_uri!!)
+
+        uploadTask.addOnFailureListener {
+            Toast.makeText(
+                this,
+                "Une erreur est survenue lors de l'upload de l'image",
+                Toast.LENGTH_SHORT
+            ).show()
+        }.addOnSuccessListener {
+            var aliment = Aliment()
+            aliment.image = imagePath
+            aliment.name = nameAlimentView.text.toString()
+            val result = db.collection("aliments").document().set(aliment.toMap())
+            result.addOnSuccessListener {
+                Toast.makeText(
+                    this,
+                    "L'aliment a été créé avec succès",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    fun showlocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             return
         }
-        locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener);
+        locationManager?.requestLocationUpdates(
+            LocationManager.NETWORK_PROVIDER,
+            0L,
+            0f,
+            locationListener
+        )
 
     }
 
     private val locationListener: LocationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            var message =  location.longitude.toString() + ":" + location.latitude.toString()
+            var message = location.longitude.toString() + ":" + location.latitude.toString()
             //Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             // il faut retourner ou jour avec la variable message
         }
+
         override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
         override fun onProviderEnabled(provider: String) {}
         override fun onProviderDisabled(provider: String) {}
