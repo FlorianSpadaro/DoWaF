@@ -6,11 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".RegistrationActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="427dp"
-        android:layout_height="920dp"
-        app:srcCompat="@drawable/navigationsmaller" />
+
 
 
 
@@ -20,6 +16,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/navigationsmaller"
     android:paddingTop="?attr/actionBarSize">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

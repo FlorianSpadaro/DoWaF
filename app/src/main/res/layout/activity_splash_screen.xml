@@ -8,16 +8,12 @@
     tools:context=".SplashScreen">
 
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="428dp"
-        android:layout_height="925dp"
-        app:srcCompat="@drawable/splashscreen" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="776dp"
+        android:background="@drawable/splashscreen"
         app:layout_anchor="@+id/constraintLayout"
         app:layout_anchorGravity="center"
         tools:context=".RegistrationActivity">

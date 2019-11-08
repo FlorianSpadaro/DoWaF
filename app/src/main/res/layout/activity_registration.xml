@@ -6,17 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".RegistrationActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="427dp"
-        android:layout_height="920dp"
-        app:srcCompat="@drawable/connexion" />
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/connexion"
         app:layout_anchor="@+id/constraintLayout"
         app:layout_anchorGravity="center"
         tools:context=".RegistrationActivity">
