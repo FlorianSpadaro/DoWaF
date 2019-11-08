@@ -1,12 +1,15 @@
 package com.example.dowaf.ui.aliment
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.example.dowaf.EditAliment
+import com.example.dowaf.HomeActivity
 import com.example.dowaf.R
 import com.example.dowaf.model.Aliment
 import com.google.android.gms.tasks.OnCompleteListener
@@ -43,7 +46,8 @@ class AlimentFragment : Fragment() {
 
         val btn: Button = root.findViewById(R.id.addAlimentBtn)
         btn.setOnClickListener { view ->
-            addAlimentDialog()
+            //addAlimentDialog()
+            addAliment()
         }
 
         return root
@@ -101,5 +105,13 @@ class AlimentFragment : Fragment() {
             db.collection("aliments").document().set(aliment.toMap())
         }
         builder.show()
+    }
+
+    fun addAliment()
+    {
+        val title = "Ajout d'un aliment"
+        var intent = Intent(this.context, EditAliment::class.java)
+        intent.putExtra("title", title)
+        startActivity(intent)
     }
 }
