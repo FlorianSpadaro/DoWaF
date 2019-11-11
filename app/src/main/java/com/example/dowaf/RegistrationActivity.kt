@@ -9,7 +9,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
 import kotlinx.android.synthetic.main.activity_main.passwordTxt
 import kotlinx.android.synthetic.main.activity_registration.*
 import com.example.dowaf.model.User as UserApp
@@ -129,7 +128,7 @@ class RegistrationActivity : AppCompatActivity() {
             .addOnCompleteListener { task: Task<AuthResult> ->
                 if (task.isSuccessful) {
                     val firebaseUser = auth.currentUser!!
-                    createUser(UserApp(null, name, firstName, phone, mail, null))
+                    createUser(UserApp(firebaseUser.uid, name, firstName, phone, mail, null))
                     toastMessage("Votre compte a été créé avec succès")
                     val intent = Intent(applicationContext, HomeActivity::class.java)
                     startActivity(intent)
@@ -140,10 +139,9 @@ class RegistrationActivity : AppCompatActivity() {
 
     }
 
-    fun createUser(user: UserApp)
-    {
+    fun createUser(user: UserApp) {
         val db = FirebaseFirestore.getInstance()
-        val noteDocRef = db.collection("users").document()
+        val noteDocRef = db.collection("users").document(user.id.toString())
         noteDocRef.set(user.toMap())
     }
 }

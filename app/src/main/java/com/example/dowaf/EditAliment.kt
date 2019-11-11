@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.dowaf.model.Aliment
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_edit_aliment.*
@@ -69,6 +70,7 @@ class EditAliment : AppCompatActivity() {
             var aliment = Aliment()
             aliment.image = imagePath
             aliment.name = nameAlimentView.text.toString()
+            aliment.ownerUid = FirebaseAuth.getInstance().currentUser!!.uid
             val result = db.collection("aliments").document().set(aliment.toMap())
             result.addOnSuccessListener {
                 Toast.makeText(
