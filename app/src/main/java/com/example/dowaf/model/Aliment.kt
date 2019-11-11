@@ -41,7 +41,7 @@ class Aliment() : Parcelable {
         this.image = map["image"].toString()
         this.position = map["position"].toString()
         this.ownerUid = map["ownerUid"].toString()
-        this.bookerUid = map["nameUid"].toString()
+        this.bookerUid = map["bookerUid"].toString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

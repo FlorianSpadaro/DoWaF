@@ -20,8 +20,14 @@
     <fragment
         android:id="@+id/navigation_aliment"
         android:name="com.example.dowaf.ui.aliment.AlimentFragment"
-        android:label="Aliments"
+        android:label="Mes Aliments"
         tools:layout="@layout/fragment_aliment" />
+
+    <fragment
+        android:id="@+id/navigation_order"
+        android:name="com.example.dowaf.ui.order.OrderFragment"
+        android:label="Mes Commandes"
+        tools:layout="@layout/order_fragment" />
 
     <fragment
         android:id="@+id/navigation_account"

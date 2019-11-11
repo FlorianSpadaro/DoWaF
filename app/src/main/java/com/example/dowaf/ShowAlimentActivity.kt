@@ -2,6 +2,7 @@ package com.example.dowaf
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -32,6 +33,9 @@ class ShowAlimentActivity : AppCompatActivity() {
         db.collection("users").document(aliment!!.ownerUid.toString()).get().addOnSuccessListener {
             owner.fromMap(it.data!!)
             owner.id = it.reference.id
+            if (aliment!!.bookerUid == auth.currentUser!!.uid) {
+                this.findViewById<Button>(R.id.bookingAlimentBtn).text = "Annuler la réservation"
+            }
         }
 
         this.findViewById<TextView>(R.id.nameAlimentView).text = aliment!!.name.toString()
@@ -66,7 +70,13 @@ class ShowAlimentActivity : AppCompatActivity() {
     }
 
     fun onClickBookingBtn(view: View) {
-        aliment!!.bookerUid = auth.currentUser!!.uid
+        var successMessage = "Votre réservation a été effectuée"
+        if (aliment!!.bookerUid == auth.currentUser!!.uid) {
+            aliment!!.bookerUid = null
+            successMessage = "Votre réservation a été annulée"
+        } else {
+            aliment!!.bookerUid = auth.currentUser!!.uid
+        }
         val resultat =
             db.collection("aliments").document(aliment!!.id.toString()).set(aliment!!.toMap())
         resultat.addOnFailureListener {
@@ -77,7 +87,7 @@ class ShowAlimentActivity : AppCompatActivity() {
             ).show()
         }
         resultat.addOnSuccessListener {
-            Toast.makeText(this, "Votre réservation a été effectuée", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, successMessage, Toast.LENGTH_SHORT).show()
             finish()
         }
     }

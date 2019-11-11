@@ -14,11 +14,13 @@ import com.example.dowaf.R
 import com.example.dowaf.RecyclerAdapter
 import com.example.dowaf.model.Aliment
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AlimentFragment : Fragment() {
 
     private val db = FirebaseFirestore.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     private lateinit var alimentViewModel: AlimentViewModel
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var adapter: RecyclerAdapter? = null
@@ -44,7 +46,10 @@ class AlimentFragment : Fragment() {
     private fun createAlimentsListView(view: View) {
         layoutManager = LinearLayoutManager(this.context)
 
-        val query = db.collection("aliments")//.orderBy("productName", Query.Direction.ASCENDING)
+        val query = db.collection("aliments").whereEqualTo(
+            "ownerUid",
+            auth.currentUser!!.uid
+        )//.orderBy("productName", Query.Direction.ASCENDING)
         val options =
             FirestoreRecyclerOptions.Builder<Aliment>().setQuery(query, Aliment::class.java).build()
 

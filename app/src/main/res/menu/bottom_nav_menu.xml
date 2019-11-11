@@ -14,7 +14,12 @@
     <item
         android:id="@+id/navigation_aliment"
         android:icon="@drawable/icon_food"
-        android:title="Aliments" />
+        android:title="Mes Aliments" />
+
+    <item
+        android:id="@+id/navigation_order"
+        android:icon="@drawable/icon_food"
+        android:title="Mes Commandes" />
 
     <item
         android:id="@+id/navigation_account"
