@@ -8,6 +8,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.dowaf.model.Aliment
 import com.example.dowaf.model.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -18,6 +19,7 @@ class ShowAlimentActivity : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     private var aliment: Aliment? = null
     private var owner = User()
 
@@ -30,11 +32,6 @@ class ShowAlimentActivity : AppCompatActivity() {
         db.collection("users").document(aliment!!.ownerUid.toString()).get().addOnSuccessListener {
             owner.fromMap(it.data!!)
             owner.id = it.reference.id
-            Toast.makeText(
-                this,
-                owner.name.toString() + ", " + owner.id.toString(),
-                Toast.LENGTH_SHORT
-            ).show()
         }
 
         this.findViewById<TextView>(R.id.nameAlimentView).text = aliment!!.name.toString()
@@ -61,10 +58,27 @@ class ShowAlimentActivity : AppCompatActivity() {
         dialogLayout.mailOwnerView.text = owner.mail.toString()
         dialogLayout.phoneOwnerView.text = owner.phone.toString()
         builder.setView(dialogLayout)
-        builder.setPositiveButton("Appeler") { dialogInterface, i ->
+        builder.setPositiveButton("OK") { dialogInterface, i ->
             //TODO Gérer l'appel au propriétaire
-            Toast.makeText(this, "APPEL DU PROPRIETAIRE", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "APPEL DU PROPRIETAIRE", Toast.LENGTH_SHORT).show()
         }
         builder.show()
+    }
+
+    fun onClickBookingBtn(view: View) {
+        aliment!!.bookerUid = auth.currentUser!!.uid
+        val resultat =
+            db.collection("aliments").document(aliment!!.id.toString()).set(aliment!!.toMap())
+        resultat.addOnFailureListener {
+            Toast.makeText(
+                this,
+                "Une erreur s'est produite, veuillez réessayer plus tard",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        resultat.addOnSuccessListener {
+            Toast.makeText(this, "Votre réservation a été effectuée", Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
 }
