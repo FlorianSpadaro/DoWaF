@@ -20,7 +20,6 @@ class AlimentFragment : Fragment() {
 
     private val db = FirebaseFirestore.getInstance()
     private lateinit var alimentViewModel: AlimentViewModel
-    private val alimentsList = ArrayList<Aliment>()
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var adapter: RecyclerAdapter? = null
 
@@ -29,36 +28,20 @@ class AlimentFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        /*db.collection("aliments")
-        val result = db.collection("aliments").get()
-            .addOnCompleteListener(OnCompleteListener<QuerySnapshot> { task ->
-                if (task.isSuccessful) {
-                    for (document in task.result!!) {
-                        var aliment = Aliment()
-                        aliment.id = document.reference.id
-                        aliment.fromMap(document.data)
-                        alimentsList.add(aliment)
-                    }
-                    //createAlimentsListView(alimentsList)
-                    createAlimentsListView()
-                } else {
-                    println("Erreur")
-                }
-            })*/
         val root = inflater.inflate(R.layout.fragment_aliment, container, false)
 
         createAlimentsListView(root)
 
         val btn: Button = root.findViewById(R.id.addAlimentBtn)
         btn.setOnClickListener { view ->
-            //addAlimentDialog()
-            addAliment()
+            var intent = Intent(this.context, EditAliment::class.java)
+            startActivity(intent)
         }
 
         return root
     }
 
-    fun createAlimentsListView(view: View) {
+    private fun createAlimentsListView(view: View) {
         layoutManager = LinearLayoutManager(this.context)
 
         val query = db.collection("aliments")//.orderBy("productName", Query.Direction.ASCENDING)
@@ -84,47 +67,4 @@ class AlimentFragment : Fragment() {
         }
     }
 
-    /*fun createAlimentsListView(aliments: ArrayList<Aliment>) {
-        var alimentsNameList = ArrayList<String>()
-        var i = 0
-        while (i < aliments.size) {
-            alimentsNameList.add(aliments[i].name.toString())
-
-            i++
-        }
-
-        val adapter = ArrayAdapter(
-            this.context,
-            R.layout.alimentlist_item, alimentsNameList
-        )
-
-
-        val listView: ListView = this.view!!.findViewById(R.id.alimentsListView)
-        listView.adapter = adapter
-
-        listView.setOnItemClickListener { parent: AdapterView<*>, view: View, position: Int, id: Long ->
-
-            modifyAlimentDialog(aliments[position])
-        }
-    }*/
-
-    /*fun modifyAlimentDialog(aliment: Aliment) {
-        val builder = AlertDialog.Builder(this.context)
-        val inflater = layoutInflater
-        builder.setTitle("Modification de l'aliment: " + aliment.name.toString())
-        val dialogLayout = inflater.inflate(R.layout.edit_aliment_dialog, null)
-        builder.setView(dialogLayout)
-        builder.setPositiveButton("OK") { dialogInterface, i ->
-            val editText = dialogLayout.findViewById<EditText>(R.id.nameAliment)
-            aliment.name = editText.text.toString()
-            db.collection("aliments").document(aliment.id.toString()).set(aliment.toMap())
-        }
-        builder.show()
-    }*/
-
-
-    fun addAliment() {
-        var intent = Intent(this.context, EditAliment::class.java)
-        startActivity(intent)
-    }
 }

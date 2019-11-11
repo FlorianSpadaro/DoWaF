@@ -28,7 +28,7 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, item: Aliment) {
-        val id = snapshots.getSnapshot(position).id
+        //val id = snapshots.getSnapshot(position).id
 
         holder.apply {
             if (item.image != null && item.image != "" && item.image != "null") {
@@ -38,7 +38,10 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
             }
 
             itemTitle.text = item.name
-            itemDetail.text = id
+            if (item.description != null) {
+                itemDetail.text = item.description
+            }
+            //itemDetail.text = id
             itemImage.setImageResource(R.drawable.ic_home_black_24dp)
         }
     }
@@ -64,7 +67,9 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
                     intent.putExtra("aliment", aliment)
                     it.context.startActivity(intent)
                 } else {
-                    text = "Ce n'est pas mon aliment"
+                    var intent = Intent(it.context, ShowAlimentActivity::class.java)
+                    intent.putExtra("aliment", aliment)
+                    it.context.startActivity(intent)
                 }
                 Toast.makeText(
                     itemView.context,

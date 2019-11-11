@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nom:"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/nameOwnerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nom du propriétaire" />
+
+    <TextView
+        android:id="@+id/textView12"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mail:"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/mailOwnerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mail du propriétaire" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Téléphone:"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/phoneOwnerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Téléphone du propriétaire" />
+</LinearLayout>

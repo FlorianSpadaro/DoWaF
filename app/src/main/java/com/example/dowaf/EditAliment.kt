@@ -51,7 +51,9 @@ class EditAliment : AppCompatActivity() {
         } else {
             titleView.text = "Modification de l'aliment: " + aliment!!.name.toString()
             nameAlimentView.setText(aliment!!.name.toString())
-
+            if (aliment!!.description != null) {
+                descriptionAlimentView.setText(aliment!!.description.toString())
+            }
             if (aliment!!.image != null && aliment!!.image != "" && aliment!!.image != "null") {
                 storage.reference.child(aliment!!.image.toString())
                     .downloadUrl.addOnSuccessListener {
@@ -96,6 +98,7 @@ class EditAliment : AppCompatActivity() {
             }.addOnSuccessListener {
                 aliment!!.image = imagePath
                 aliment!!.name = nameAlimentView.text.toString()
+                aliment!!.description = descriptionAlimentView.text.toString()
                 val result = db.collection("aliments").document(aliment!!.id.toString())
                     .set(aliment!!.toMap())
                 result.addOnSuccessListener {
@@ -109,6 +112,7 @@ class EditAliment : AppCompatActivity() {
             }
         } else {
             aliment!!.name = nameAlimentView.text.toString()
+            aliment!!.description = descriptionAlimentView.text.toString()
             val result = db.collection("aliments").document(aliment!!.id.toString())
                 .set(aliment!!.toMap())
             result.addOnSuccessListener {
@@ -123,37 +127,45 @@ class EditAliment : AppCompatActivity() {
     }
 
     private fun createNewAliment() {
-        val currentTime = LocalDateTime.now().toString()
-        val currentUserUid = auth.currentUser!!.uid
+        if (image_uri != null)
+        {
+            val currentTime = LocalDateTime.now().toString()
+            val currentUserUid = auth.currentUser!!.uid
 
-        val imagePath = "images/${currentUserUid}/${currentTime}"
+            val imagePath = "images/${currentUserUid}/${currentTime}"
 
-        val storageRef = storage.reference
+            val storageRef = storage.reference
 
-        val riversRef = storageRef.child(imagePath)
-        val uploadTask = riversRef.putFile(image_uri!!)
+            val riversRef = storageRef.child(imagePath)
+            val uploadTask = riversRef.putFile(image_uri!!)
 
-        uploadTask.addOnFailureListener {
-            Toast.makeText(
-                this,
-                "Une erreur est survenue lors de l'upload de l'image",
-                Toast.LENGTH_SHORT
-            ).show()
-        }.addOnSuccessListener {
-            var aliment = Aliment()
-            aliment.image = imagePath
-            aliment.name = nameAlimentView.text.toString()
-            aliment.ownerUid = FirebaseAuth.getInstance().currentUser!!.uid
-            val result = db.collection("aliments").document().set(aliment.toMap())
-            result.addOnSuccessListener {
+            uploadTask.addOnFailureListener {
                 Toast.makeText(
                     this,
-                    "L'aliment a été créé avec succès",
+                    "Une erreur est survenue lors de l'upload de l'image",
                     Toast.LENGTH_SHORT
                 ).show()
-                finish()
+            }.addOnSuccessListener {
+                var aliment = Aliment()
+                aliment.image = imagePath
+                aliment.name = nameAlimentView.text.toString()
+                aliment!!.description = descriptionAlimentView.text.toString()
+                aliment.ownerUid = FirebaseAuth.getInstance().currentUser!!.uid
+                val result = db.collection("aliments").document().set(aliment.toMap())
+                result.addOnSuccessListener {
+                    Toast.makeText(
+                        this,
+                        "L'aliment a été créé avec succès",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
             }
         }
+        else{
+            Toast.makeText(this, "Veuillez mettre une photo de l'aliment", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     fun showlocation() {

@@ -6,6 +6,7 @@ import android.os.Parcelable
 class Aliment() : Parcelable {
     var id: String? = null
     var name: String? = null
+    var description: String? = null
     var image: String? = null
     var position: String? = null
     var ownerUid: String? = null
@@ -14,6 +15,7 @@ class Aliment() : Parcelable {
     constructor(parcel: Parcel) : this() {
         id = parcel.readString()
         name = parcel.readString()
+        description = parcel.readString()
         image = parcel.readString()
         position = parcel.readString()
         ownerUid = parcel.readString()
@@ -24,6 +26,7 @@ class Aliment() : Parcelable {
     fun toMap(): Map<String, Any?> {
         val result = HashMap<String, Any?>()
         result["name"] = name
+        result["description"] = description
         result["image"] = image
         result["position"] = position
         result["ownerUid"] = ownerUid
@@ -34,6 +37,7 @@ class Aliment() : Parcelable {
 
     fun fromMap(map: Map<String, Any?>) {
         this.name = map["name"].toString()
+        this.description = map["description"].toString()
         this.image = map["image"].toString()
         this.position = map["position"].toString()
         this.ownerUid = map["ownerUid"].toString()
@@ -43,6 +47,7 @@ class Aliment() : Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(id)
         parcel.writeString(name)
+        parcel.writeString(description)
         parcel.writeString(image)
         parcel.writeString(position)
         parcel.writeString(ownerUid)

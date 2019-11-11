@@ -34,4 +34,12 @@ class User {
 
         return result
     }
+
+    fun fromMap(map: Map<String, Any?>) {
+        this.name = map["name"].toString()
+        this.firstName = map["firstName"].toString()
+        this.address = map["address"].toString()
+        this.phone = map["phone"].toString()
+        this.mail = map["mail"].toString()
+    }
 }
