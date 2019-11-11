@@ -57,6 +57,8 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
             itemTitle = itemView.findViewById(R.id.item_title)
             itemDetail = itemView.findViewById(R.id.item_detail)
 
+            //TODO Pouvoir Supprimer les aliments (LongClick / Swipe / Button)
+
             itemView.setOnClickListener {
                 val aliment = getItem(adapterPosition)
                 aliment.id = snapshots.getSnapshot(adapterPosition).id

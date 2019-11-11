@@ -39,7 +39,6 @@ class OrderFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(OrderViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     private fun createAlimentsListView(view: View) {

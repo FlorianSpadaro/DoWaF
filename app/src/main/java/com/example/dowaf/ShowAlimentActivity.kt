@@ -28,6 +28,8 @@ class ShowAlimentActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_aliment)
 
+        //TODO Montrer l'emplacement de l'aliment
+
         aliment = intent.getParcelableExtra("aliment")
 
         db.collection("users").document(aliment!!.ownerUid.toString()).get().addOnSuccessListener {
@@ -63,7 +65,7 @@ class ShowAlimentActivity : AppCompatActivity() {
         dialogLayout.phoneOwnerView.text = owner.phone.toString()
         builder.setView(dialogLayout)
         builder.setPositiveButton("OK") { dialogInterface, i ->
-            //TODO Gérer l'appel au propriétaire
+            //TODO Gérer l'appel au propriétaire / Envoi de mail
             //Toast.makeText(this, "APPEL DU PROPRIETAIRE", Toast.LENGTH_SHORT).show()
         }
         builder.show()

@@ -27,6 +27,9 @@ class AccountFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //TODO pouvoir modifier les infos de l'utilisateur
+        //TODO photo de profil de l'utilisateur
+
         accountViewModel =
             ViewModelProviders.of(this).get(AccountViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_account, container, false)
