@@ -1,5 +1,6 @@
 package com.example.dowaf
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,6 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
             if (item.image != null && item.image != "" && item.image != "null") {
                 storage.reference.child(item.image.toString()).downloadUrl.addOnSuccessListener {
                     Picasso.get().load(it).into(itemImage)
-                    //itemImage.setImageURI(it)
                 }
             }
 
@@ -60,7 +60,9 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
 
                 var text = ""
                 if (aliment.ownerUid == auth.currentUser!!.uid) {
-                    text = "C'est mon aliment"
+                    var intent = Intent(it.context, EditAliment::class.java)
+                    intent.putExtra("aliment", aliment)
+                    it.context.startActivity(intent)
                 } else {
                     text = "Ce n'est pas mon aliment"
                 }

@@ -20,7 +20,9 @@ import com.example.dowaf.model.Aliment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_aliment.*
+import java.time.LocalDateTime
 
 
 class EditAliment : AppCompatActivity() {
@@ -32,6 +34,7 @@ class EditAliment : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
     private var aliment: Aliment? = null
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +44,23 @@ class EditAliment : AppCompatActivity() {
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?*/
 
 
-        val title = intent.getStringExtra("title")
+        //val title = intent.getStringExtra("title")
         aliment = intent.getParcelableExtra("aliment")
+        if (aliment == null) {
+            titleView.text = "Ajout d'un nouvel aliment"
+        } else {
+            titleView.text = "Modification de l'aliment: " + aliment!!.name.toString()
+            nameAlimentView.setText(aliment!!.name.toString())
 
-        titleView.text = title
+            if (aliment!!.image != null && aliment!!.image != "" && aliment!!.image != "null") {
+                storage.reference.child(aliment!!.image.toString())
+                    .downloadUrl.addOnSuccessListener {
+                    Picasso.get().load(it).into(imageAlimentView)
+                }
+            }
+
+        }
+        //titleView.text = title
     }
 
     fun onClickCancelBtn(view: View) {
@@ -52,8 +68,65 @@ class EditAliment : AppCompatActivity() {
     }
 
     fun onClickValidateBtn(view: View) {
-        //val current = LocalDateTime.now().toString()
-        val imagePath = "images/${image_uri!!.lastPathSegment}"
+        if (aliment == null) {
+            createNewAliment()
+        } else {
+            modifyAliment()
+        }
+    }
+
+    private fun modifyAliment() {
+        if (image_uri != null) {
+            val currentTime = LocalDateTime.now().toString()
+            val currentUserUid = auth.currentUser!!.uid
+
+            val imagePath = "images/${currentUserUid}/${currentTime}"
+
+            val storageRef = storage.reference
+
+            val riversRef = storageRef.child(imagePath)
+            val uploadTask = riversRef.putFile(image_uri!!)
+
+            uploadTask.addOnFailureListener {
+                Toast.makeText(
+                    this,
+                    "Une erreur est survenue lors de l'upload de l'image",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }.addOnSuccessListener {
+                aliment!!.image = imagePath
+                aliment!!.name = nameAlimentView.text.toString()
+                val result = db.collection("aliments").document(aliment!!.id.toString())
+                    .set(aliment!!.toMap())
+                result.addOnSuccessListener {
+                    Toast.makeText(
+                        this,
+                        "L'aliment a été modifié avec succès",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
+            }
+        } else {
+            aliment!!.name = nameAlimentView.text.toString()
+            val result = db.collection("aliments").document(aliment!!.id.toString())
+                .set(aliment!!.toMap())
+            result.addOnSuccessListener {
+                Toast.makeText(
+                    this,
+                    "L'aliment a été modifié avec succès",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    private fun createNewAliment() {
+        val currentTime = LocalDateTime.now().toString()
+        val currentUserUid = auth.currentUser!!.uid
+
+        val imagePath = "images/${currentUserUid}/${currentTime}"
 
         val storageRef = storage.reference
 
