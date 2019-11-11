@@ -30,6 +30,7 @@ class EditAliment : AppCompatActivity() {
     private var locationManager: LocationManager? = null
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
+    private var aliment: Aliment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +41,7 @@ class EditAliment : AppCompatActivity() {
 
 
         val title = intent.getStringExtra("title")
+        aliment = intent.getParcelableExtra("aliment")
 
         titleView.text = title
     }

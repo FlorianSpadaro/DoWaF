@@ -26,9 +26,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_home" />
 
-
-    <ListView
-        android:id="@+id/alimentsListView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="409dp"
         android:layout_height="626dp"
         android:layout_marginTop="100dp"
@@ -36,7 +35,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addAlimentBtn">
-
-    </ListView>
+        app:layout_constraintTop_toBottomOf="@+id/addAlimentBtn"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </androidx.constraintlayout.widget.ConstraintLayout>
