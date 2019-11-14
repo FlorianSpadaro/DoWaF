@@ -6,17 +6,22 @@ import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.dowaf.model.Aliment
+import com.example.dowaf.model.Category
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -25,16 +30,18 @@ import kotlinx.android.synthetic.main.activity_edit_aliment.*
 import java.time.LocalDateTime
 
 
-class EditAliment : AppCompatActivity() {
+class EditAliment : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private val PERMISSION_CODE = 1000
+    val PERMISSION_ID = 42
     private val IMAGE_CAPTURE_CODE = 1001
     var image_uri: Uri? = null
-    private var locationManager: LocationManager? = null
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
     private var aliment: Aliment? = null
     private val auth = FirebaseAuth.getInstance()
+    var fusedLocationClient: FusedLocationProviderClient? = null
+    var listOfCategories = ArrayList<Category>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +49,27 @@ class EditAliment : AppCompatActivity() {
 
         //TODO ajouter la position d'un aliment
 
-        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) { return; }
-        locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?*/
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        if (checkPermission(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        ) {
+            fusedLocationClient?.lastLocation?.addOnSuccessListener(
+                this
+            ) { location: Location? ->
+                // Got last known location. In some rare
+                // situations this can be null.
+                if (location == null) {
+                    // TODO, handle it
+                } else location.apply {
+                    // Handle location object
+                    aliment!!.position =
+                        location.latitude.toString() + "," + location.longitude.toString()
+                }
+            }
+        }
 
 
         //val title = intent.getStringExtra("title")
@@ -64,7 +90,33 @@ class EditAliment : AppCompatActivity() {
             }
 
         }
-        //titleView.text = title
+
+        var positionCategorieSelected = -1
+
+        db.collection("categories").get().addOnSuccessListener {
+            var i = 0
+            it.documents.forEach { categoryDb ->
+                var category = Category()
+                category.id = categoryDb.id
+                category.fromMap(categoryDb.data!!)
+                listOfCategories.add(category)
+                if (aliment != null && category.id == aliment!!.categoryId) {
+                    positionCategorieSelected = i
+                }
+                i++
+            }
+            var listCategoriesName = ArrayList<String>()
+            listOfCategories.forEach {
+                listCategoriesName.add(it.name.toString())
+            }
+            spinner!!.onItemSelectedListener = this
+            val aa = ArrayAdapter(this, android.R.layout.simple_spinner_item, listCategoriesName)
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner!!.adapter = aa
+            if (positionCategorieSelected >= 0) {
+                spinner.setSelection(positionCategorieSelected)
+            }
+        }
     }
 
     fun onClickCancelBtn(view: View) {
@@ -129,8 +181,7 @@ class EditAliment : AppCompatActivity() {
     }
 
     private fun createNewAliment() {
-        if (image_uri != null)
-        {
+        if (image_uri != null) {
             val currentTime = LocalDateTime.now().toString()
             val currentUserUid = auth.currentUser!!.uid
 
@@ -151,7 +202,7 @@ class EditAliment : AppCompatActivity() {
                 var aliment = Aliment()
                 aliment.image = imagePath
                 aliment.name = nameAlimentView.text.toString()
-                aliment!!.description = descriptionAlimentView.text.toString()
+                aliment.description = descriptionAlimentView.text.toString()
                 aliment.ownerUid = FirebaseAuth.getInstance().currentUser!!.uid
                 val result = db.collection("aliments").document().set(aliment.toMap())
                 result.addOnSuccessListener {
@@ -163,38 +214,41 @@ class EditAliment : AppCompatActivity() {
                     finish()
                 }
             }
-        }
-        else{
-            Toast.makeText(this, "Veuillez mettre une photo de l'aliment", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Veuillez mettre une photo de l'aliment", Toast.LENGTH_SHORT)
+                .show()
         }
 
     }
 
-    fun showlocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
+
+    private fun checkPermission(vararg perm: String): Boolean {
+        val havePermissions = perm.toList().all {
+            ContextCompat.checkSelfPermission(this, it) ==
+                    PackageManager.PERMISSION_GRANTED
         }
-        locationManager?.requestLocationUpdates(
-            LocationManager.NETWORK_PROVIDER,
-            0L,
-            0f,
-            locationListener
-        )
-
-    }
-
-    private val locationListener: LocationListener = object : LocationListener {
-        override fun onLocationChanged(location: Location) {
-            var message = location.longitude.toString() + ":" + location.latitude.toString()
-            //Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            // il faut retourner ou jour avec la variable message
+        if (!havePermissions) {
+            if (perm.toList().any {
+                    ActivityCompat.shouldShowRequestPermissionRationale(this, it)
+                }
+            ) {
+                val dialog = AlertDialog.Builder(this)
+                    .setTitle("Permission")
+                    .setMessage("Permission needed!")
+                    .setPositiveButton("OK") { id, v ->
+                        ActivityCompat.requestPermissions(
+                            this, perm, PERMISSION_ID
+                        )
+                    }
+                    .setNegativeButton("No", { id, v -> })
+                    .create()
+                dialog.show()
+            } else {
+                ActivityCompat.requestPermissions(this, perm, PERMISSION_ID)
+            }
+            return false
         }
-
-        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
-        override fun onProviderEnabled(provider: String) {}
-        override fun onProviderDisabled(provider: String) {}
+        return true
     }
 
     fun onClickPictureBtn(view: View) {
@@ -259,6 +313,15 @@ class EditAliment : AppCompatActivity() {
             //set image captured to image view
             imageAlimentView.setImageURI(image_uri)
         }
+    }
+
+    override fun onItemSelected(arg0: AdapterView<*>, arg1: View, position: Int, id: Long) {
+        var category = listOfCategories[position]
+        aliment!!.categoryId = category.id
+    }
+
+    override fun onNothingSelected(arg0: AdapterView<*>) {
+
     }
 
 }

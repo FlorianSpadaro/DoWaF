@@ -8,6 +8,7 @@ class Aliment() : Parcelable {
     var name: String? = null
     var description: String? = null
     var image: String? = null
+    var categoryId: String? = null
     var position: String? = null
     var ownerUid: String? = null
     var bookerUid: String? = null
@@ -20,6 +21,7 @@ class Aliment() : Parcelable {
         position = parcel.readString()
         ownerUid = parcel.readString()
         bookerUid = parcel.readString()
+        categoryId = parcel.readString()
     }
 
 
@@ -31,6 +33,7 @@ class Aliment() : Parcelable {
         result["position"] = position
         result["ownerUid"] = ownerUid
         result["bookerUid"] = bookerUid
+        result["categoryId"] = categoryId
 
         return result
     }
@@ -42,6 +45,7 @@ class Aliment() : Parcelable {
         this.position = map["position"].toString()
         this.ownerUid = map["ownerUid"].toString()
         this.bookerUid = map["bookerUid"].toString()
+        this.categoryId = map["categoryId"].toString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -52,6 +56,7 @@ class Aliment() : Parcelable {
         parcel.writeString(position)
         parcel.writeString(ownerUid)
         parcel.writeString(bookerUid)
+        parcel.writeString(categoryId)
     }
 
     override fun describeContents(): Int {

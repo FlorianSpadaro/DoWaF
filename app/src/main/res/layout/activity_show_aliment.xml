@@ -86,4 +86,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bookingAlimentBtn" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/positionMapView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="50dp"
+        android:background="@color/cardview_dark_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cancelBtn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
