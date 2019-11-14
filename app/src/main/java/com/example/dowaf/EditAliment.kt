@@ -62,7 +62,7 @@ class EditAliment : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 // Got last known location. In some rare
                 // situations this can be null.
                 if (location == null) {
-                    // TODO, handle it
+                    
                 } else location.apply {
                     // Handle location object
                     aliment!!.position =

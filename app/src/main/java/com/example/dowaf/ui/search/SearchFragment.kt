@@ -1,6 +1,7 @@
 package com.example.dowaf.ui.search
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.example.dowaf.EditAliment
 import com.example.dowaf.R
+import com.example.dowaf.ShowCategoryAliments
 import com.example.dowaf.model.Category
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -101,6 +104,12 @@ class SearchFragment : Fragment() {
             //categoryView.findViewById<ImageView>(R.id.imgCategory)
             //    .setImageResource(category.image!!)
             categoryView.findViewById<TextView>(R.id.categoryName).text = category.name!!
+
+            categoryView.setOnClickListener {
+                var intent = Intent(it.context, ShowCategoryAliments::class.java)
+                intent.putExtra("category", category)
+                it.context.startActivity(intent)
+            }
 
             return categoryView
         }

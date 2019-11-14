@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShowAlimentActivity"></activity>
+        <activity android:name=".ShowCategoryAliments"></activity>
+        <activity android:name=".ShowAlimentActivity" />
         <activity android:name=".EditAliment" />
         <activity android:name=".MainActivity" />
         <activity
