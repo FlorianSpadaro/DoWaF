@@ -11,26 +11,19 @@ import com.example.dowaf.model.Aliment
 import com.example.dowaf.model.User
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit_aliment.*
 import kotlinx.android.synthetic.main.contact_owner_layout.view.*
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import kotlinx.android.synthetic.main.activity_edit_aliment.cancelBtn
-import kotlinx.android.synthetic.main.activity_edit_aliment.imageAlimentView
-import kotlinx.android.synthetic.main.activity_show_aliment.*
 
 
-class ShowAlimentActivity : AppCompatActivity(), OnMapReadyCallback {
+//class ShowAlimentActivity : AppCompatActivity(), OnMapReadyCallback {
+class ShowAlimentActivity : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
@@ -38,22 +31,24 @@ class ShowAlimentActivity : AppCompatActivity(), OnMapReadyCallback {
     private var aliment: Aliment? = null
     private var owner = User()
 
-    private lateinit var mMap: GoogleMap
+    /*private var mapView: MapView? = null
+    private var gmap: GoogleMap? = null
+
+    private val MAP_VIEW_BUNDLE_KEY = "AIzaSyAJdsDjZdebiZf71fyFb5AZImQHWvjkc3Q"*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_show_aliment)
 
         //TODO Montrer l'emplacement de l'aliment
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.positionMapView) as? SupportMapFragment
-        mapFragment?.getMapAsync(this)
-        /*(this.supportFragmentManager.findFragmentById(positionMapView.id) as SupportMapFragment?)?.let {
-            it.getMapAsync(this)
-        }*/
+        /*var mapViewBundle: Bundle? = null
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
+        }
 
-        /*val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.positionMapView) as SupportMapFragment
-        mapFragment.getMapAsync(this)*/
+        mapView = findViewById(R.id.positionMapView)
+        mapView!!.onCreate(mapViewBundle)
+        mapView!!.getMapAsync(this)*/
 
         aliment = intent.getParcelableExtra("aliment")
 
@@ -119,12 +114,52 @@ class ShowAlimentActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
+    /*public override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
 
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        var mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY)
+        if (mapViewBundle == null) {
+            mapViewBundle = Bundle()
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle)
+        }
+
+        mapView!!.onSaveInstanceState(mapViewBundle)
     }
+
+    override fun onResume() {
+        super.onResume()
+        mapView!!.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView!!.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView!!.onStop()
+    }
+
+    override fun onPause() {
+        mapView!!.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        mapView!!.onDestroy()
+        super.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView!!.onLowMemory()
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        gmap = googleMap
+        gmap!!.setMinZoomPreference(12f)
+        val ny = LatLng(40.7143528, -74.0059731)
+        gmap!!.moveCamera(CameraUpdateFactory.newLatLng(ny))
+    }*/
 }

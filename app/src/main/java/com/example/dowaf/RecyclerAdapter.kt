@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dowaf.model.Aliment
@@ -67,29 +66,31 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
                 val aliment = getItem(adapterPosition)
                 aliment.id = snapshots.getSnapshot(adapterPosition).id
 
-                val builder = AlertDialog.Builder(it.context)
-                builder.setTitle("Suppression de l'aliment: " + aliment.name.toString())
-                builder.setMessage("Voulez-vous vraiment supprimer cet aliment?")
-                //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
+                if (auth.currentUser!!.uid == aliment.ownerUid) {
+                    val builder = AlertDialog.Builder(it.context)
+                    builder.setTitle("Suppression de l'aliment: " + aliment.name.toString())
+                    builder.setMessage("Voulez-vous vraiment supprimer cet aliment?")
+                    //builder.setPositiveButton("OK", DialogInterface.OnClickListener(function = x))
 
-                builder.setPositiveButton("Confirmer") { dialog, which ->
-                    db.collection("aliments").document(aliment.id.toString()).delete()
+                    builder.setPositiveButton("Confirmer") { dialog, which ->
+                        db.collection("aliments").document(aliment.id.toString()).delete()
+                    }
+
+                    builder.setNegativeButton("Annuler") { dialog, which ->
+
+                    }
+
+                    builder.show()
+                    true
+                } else {
+                    false
                 }
-
-                builder.setNegativeButton("Annuler") { dialog, which ->
-
-                }
-
-                builder.show()
-
-                true
             }
 
             itemView.setOnClickListener {
                 val aliment = getItem(adapterPosition)
                 aliment.id = snapshots.getSnapshot(adapterPosition).id
 
-                var text = ""
                 if (aliment.ownerUid == auth.currentUser!!.uid) {
                     var intent = Intent(it.context, EditAliment::class.java)
                     intent.putExtra("aliment", aliment)
@@ -99,11 +100,6 @@ class RecyclerAdapter(options: FirestoreRecyclerOptions<Aliment>) :
                     intent.putExtra("aliment", aliment)
                     it.context.startActivity(intent)
                 }
-                Toast.makeText(
-                    itemView.context,
-                    text,
-                    Toast.LENGTH_LONG
-                ).show()
 
             }
         }
